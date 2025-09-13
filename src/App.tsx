@@ -10,23 +10,34 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    // Check for saved preference or default to system preference
+    const savedMode = localStorage.getItem('darkMode');
+    if (savedMode !== null) {
+      return JSON.parse(savedMode);
+    }
+    // Check system preference
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
 
   useEffect(() => {
-    const savedMode = localStorage.getItem('darkMode');
-    if (savedMode) {
-      setDarkMode(JSON.parse(savedMode));
+    // Save preference to localStorage
+    localStorage.setItem('darkMode', JSON.stringify(darkMode));
+    
+    // Update document class for global styling
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
     }
-  }, []);
+  }, [darkMode]);
 
   const toggleDarkMode = () => {
-    const newMode = !darkMode;
-    setDarkMode(newMode);
-    localStorage.setItem('darkMode', JSON.stringify(newMode));
+    setDarkMode(prev => !prev);
   };
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${
+    <div className={`min-h-screen transition-all duration-300 ease-in-out ${
       darkMode ? 'bg-slate-900' : 'bg-slate-50'
     }`}>
       <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
