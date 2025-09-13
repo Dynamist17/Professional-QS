@@ -1,7 +1,7 @@
 import React from 'react';
 import { Calculator, FileText, Users, TrendingUp, Settings, Award } from 'lucide-react';
 
-const Skills = () => {
+const Skills = ({ darkMode }) => {
   const skillCategories = [
     {
       title: 'Cost Management',
@@ -96,7 +96,7 @@ const Skills = () => {
         {/* Core Skills */}
         <div className="grid md:grid-cols-2 gap-8 mb-16">
           {skillCategories.map((category, index) => (
-            <div key={index} className={`rounded-xl p-8 shadow-lg border transition-colors duration-300 ${
+            <div key={index} className={`rounded-xl p-8 shadow-lg border transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
               darkMode 
                 ? 'bg-slate-800 border-slate-700' 
                 : 'bg-white border-slate-100'
@@ -129,7 +129,7 @@ const Skills = () => {
                       darkMode ? 'bg-slate-700' : 'bg-slate-200'
                     }`}>
                       <div
-                        className="bg-gradient-to-r from-orange-500 to-orange-600 h-2 rounded-full transition-all duration-1000"
+                        className="bg-gradient-to-r from-orange-500 to-orange-600 h-2 rounded-full transition-all duration-1000 animate-pulse"
                         style={{ width: `${skill.level}%` }}
                       ></div>
                     </div>
@@ -141,7 +141,7 @@ const Skills = () => {
         </div>
 
         {/* Software Skills */}
-        <div className={`rounded-xl p-8 shadow-lg border mb-16 transition-colors duration-300 ${
+        <div className={`rounded-xl p-8 shadow-lg border mb-16 transition-all duration-300 hover:shadow-xl ${
           darkMode 
             ? 'bg-slate-800 border-slate-700' 
             : 'bg-white border-slate-100'
@@ -174,7 +174,7 @@ const Skills = () => {
                   darkMode ? 'bg-slate-700' : 'bg-slate-200'
                 }`}>
                   <div
-                    className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-1000"
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-1000 animate-pulse"
                     style={{ width: `${software.level}%` }}
                   ></div>
                 </div>
@@ -184,7 +184,7 @@ const Skills = () => {
         </div>
 
         {/* Certifications */}
-        <div className={`rounded-xl p-8 shadow-lg border transition-colors duration-300 ${
+        <div className={`rounded-xl p-8 shadow-lg border transition-all duration-300 hover:shadow-xl ${
           darkMode 
             ? 'bg-slate-800 border-slate-700' 
             : 'bg-white border-slate-100'
@@ -204,8 +204,8 @@ const Skills = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {professionalCertifications.map((cert, index) => (
-              <div key={index} className={`flex items-center space-x-3 p-3 rounded-lg ${
-                darkMode ? 'bg-slate-700' : 'bg-slate-50'
+              <div key={index} className={`flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 hover:scale-105 ${
+                darkMode ? 'bg-slate-700 hover:bg-slate-600' : 'bg-slate-50 hover:bg-slate-100'
               }`}>
                 <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
                 <span className={`text-sm ${

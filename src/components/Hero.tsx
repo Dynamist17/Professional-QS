@@ -3,9 +3,12 @@ import { ChevronDown, MapPin, Mail, Phone, Linkedin } from 'lucide-react';
 
 const Hero = ({ darkMode }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
     setIsVisible(true);
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
   }, []);
 
   const stats = [
@@ -47,10 +50,10 @@ const Hero = ({ darkMode }) => {
                 <img
                   src="/WhatsApp Image 2025-08-11 at 18.06.07_dc05d73d.jpg"
                   alt="AbdulAzeez Ahmad"
-                  className="w-32 h-32 lg:w-40 lg:h-40 rounded-full object-cover border-4 border-orange-500 shadow-2xl"
+                  className="w-32 h-32 lg:w-40 lg:h-40 rounded-full object-cover border-4 border-orange-500 shadow-2xl transition-transform duration-300 hover:scale-105"
                 />
-                <div className="absolute -bottom-2 -right-2 bg-green-500 w-8 h-8 rounded-full border-4 border-white flex items-center justify-center">
-                  <div className="w-3 h-3 bg-white rounded-full"></div>
+                <div className="absolute -bottom-2 -right-2 bg-green-500 w-8 h-8 rounded-full border-4 border-white flex items-center justify-center animate-pulse">
+                  <div className="w-3 h-3 bg-white rounded-full animate-ping"></div>
                 </div>
               </div>
             </div>
@@ -105,6 +108,27 @@ const Hero = ({ darkMode }) => {
           </div>
 
           {/* Right Content - Stats */}
+            {/* Live Time Display */}
+            <div className={`mb-6 p-4 rounded-lg ${
+              darkMode ? 'bg-slate-800/50' : 'bg-white/50'
+            } backdrop-blur-sm`}>
+              <div className="text-sm text-orange-400 mb-1">Current Time (Lagos, Nigeria)</div>
+              <div className={`text-lg font-mono ${
+                darkMode ? 'text-white' : 'text-slate-900'
+              }`}>
+                {currentTime.toLocaleString('en-NG', {
+                  timeZone: 'Africa/Lagos',
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit'
+                })}
+              </div>
+            </div>
+
           <div className={`transform transition-all duration-1000 delay-300 ${
             isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}>
@@ -123,7 +147,7 @@ const Hero = ({ darkMode }) => {
                     <div className={`text-sm ${
                       darkMode ? 'text-slate-300' : 'text-slate-600'
                     }`}>{stat.label}</div>
-                  </div>
+              className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                 ))}
               </div>
             </div>
@@ -131,13 +155,13 @@ const Hero = ({ darkMode }) => {
         </div>
 
         {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce hover:animate-pulse">
           <button onClick={scrollToNext} className={`transition-colors ${
             darkMode 
               ? 'text-white/70 hover:text-white' 
-              : 'text-slate-500 hover:text-slate-700'
+                    <div className={`text-sm transition-colors group-hover:text-orange-400 ${
           }`}>
-            <ChevronDown size={32} />
+            <div className={`backdrop-blur-sm rounded-2xl p-8 border transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${
           </button>
         </div>
       </div>

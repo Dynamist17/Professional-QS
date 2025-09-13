@@ -11,34 +11,40 @@ import Footer from './components/Footer';
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
-    // Check for saved preference or default to system preference
-    const savedMode = localStorage.getItem('darkMode');
-    if (savedMode !== null) {
-      return JSON.parse(savedMode);
+    // Check for saved preference first
+    const saved = localStorage.getItem('darkMode');
+    if (saved !== null) {
+      return JSON.parse(saved);
     }
-    // Check system preference
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // Default to system preference
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
   useEffect(() => {
-    // Save preference to localStorage
     localStorage.setItem('darkMode', JSON.stringify(darkMode));
-    
-    // Update document class for global styling
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    document.documentElement.classList.toggle('dark', darkMode);
   }, [darkMode]);
 
+  // Listen for system theme changes
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e) => {
+      if (localStorage.getItem('darkMode') === null) {
+        setDarkMode(e.matches);
+      }
+    };
+    
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
   const toggleDarkMode = () => {
-    setDarkMode(prev => !prev);
+    setDarkMode(!darkMode);
   };
 
   return (
-    <div className={`min-h-screen transition-all duration-300 ease-in-out ${
-      darkMode ? 'bg-slate-900' : 'bg-slate-50'
+    <div className={`min-h-screen transition-colors duration-300 ${
+      darkMode ? 'dark bg-slate-900' : 'bg-slate-50'
     }`}>
       <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
       <main>

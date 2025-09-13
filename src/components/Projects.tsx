@@ -3,6 +3,7 @@ import { ExternalLink, MapPin, Calendar, DollarSign, Users, X } from 'lucide-rea
 
 const Projects = ({ darkMode }) => {
   const [selectedProject, setSelectedProject] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const projects = [
     {
@@ -109,9 +110,13 @@ const Projects = ({ darkMode }) => {
   const categories = ['All', 'Infrastructure', 'Commercial', 'Residential'];
   const [activeCategory, setActiveCategory] = useState('All');
 
-  const filteredProjects = activeCategory === 'All' 
-    ? projects 
-    : projects.filter(project => project.category === activeCategory);
+  const filteredProjects = projects.filter(project => {
+    const matchesCategory = activeCategory === 'All' || project.category === activeCategory;
+    const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         project.location.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   const openModal = (project) => {
     setSelectedProject(project);
@@ -137,13 +142,28 @@ const Projects = ({ darkMode }) => {
               Showcasing major infrastructure and construction projects with proven results and exceptional value delivery
             </p>
 
+            {/* Search Bar */}
+            <div className="mb-8 max-w-md mx-auto">
+              <input
+                type="text"
+                placeholder="Search projects..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className={`w-full px-4 py-3 rounded-lg border transition-colors ${
+                  darkMode 
+                    ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-400 focus:border-orange-500' 
+                    : 'bg-white border-slate-300 text-slate-900 focus:border-orange-500'
+                } focus:outline-none focus:ring-2 focus:ring-orange-500/20`}
+              />
+            </div>
+
             {/* Category Filter */}
             <div className="flex flex-wrap justify-center gap-4">
               {categories.map((category) => (
                 <button
                   key={category}
                   onClick={() => setActiveCategory(category)}
-                  className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
+                  className={`px-6 py-3 rounded-full font-medium transition-all duration-300 hover:scale-105 ${
                     activeCategory === category
                       ? 'bg-orange-500 text-white shadow-lg'
                       : darkMode 
@@ -157,11 +177,18 @@ const Projects = ({ darkMode }) => {
             </div>
           </div>
 
+          {/* Results Count */}
+          <div className={`text-center mb-8 ${
+            darkMode ? 'text-slate-400' : 'text-slate-600'
+          }`}>
+            Showing {filteredProjects.length} of {projects.length} projects
+          </div>
+
           <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
             {filteredProjects.map((project) => (
               <div
                 key={project.id}
-                className={`rounded-xl shadow-lg overflow-hidden border hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer ${
+                className={`rounded-xl shadow-lg overflow-hidden border hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer group ${
                   darkMode 
                     ? 'bg-slate-800 border-slate-700' 
                     : 'bg-white border-slate-100'
@@ -172,10 +199,15 @@ const Projects = ({ darkMode }) => {
                   <img
                     src={project.image}
                     alt={project.title}
-                    className="w-full h-48 object-cover transition-transform duration-300 hover:scale-105"
+                    className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
                   />
                   <div className="absolute top-4 left-4 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium">
                     {project.category}
+                  </div>
+                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <div className="bg-white/90 text-slate-900 px-4 py-2 rounded-lg font-medium">
+                      View Details
+                    </div>
                   </div>
                 </div>
 
@@ -217,23 +249,37 @@ const Projects = ({ darkMode }) => {
                     <span className="text-sm font-medium text-orange-600">
                       {project.role}
                     </span>
-                    <ExternalLink size={16} className={
+                    <ExternalLink size={16} className={`transition-colors group-hover:text-orange-500 ${
                       darkMode ? 'text-slate-500' : 'text-slate-400'
-                    } />
+                    }`} />
                   </div>
                 </div>
               </div>
             ))}
           </div>
+
+          {filteredProjects.length === 0 && (
+            <div className="text-center py-12">
+              <div className={`text-6xl mb-4 ${
+                darkMode ? 'text-slate-600' : 'text-slate-300'
+              }`}>🔍</div>
+              <h3 className={`text-xl font-bold mb-2 ${
+                darkMode ? 'text-white' : 'text-slate-900'
+              }`}>No projects found</h3>
+              <p className={`${
+                darkMode ? 'text-slate-400' : 'text-slate-600'
+              }`}>Try adjusting your search or filter criteria</p>
+            </div>
+          )}
         </div>
       </section>
 
       {/* Modal */}
       {selectedProject && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn">
           <div className={`rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto ${
             darkMode ? 'bg-slate-800' : 'bg-white'
-          }`}>
+          } animate-slideUp`}>
             <div className="relative">
               <img
                 src={selectedProject.image}
@@ -242,7 +288,7 @@ const Projects = ({ darkMode }) => {
               />
               <button
                 onClick={closeModal}
-                className={`absolute top-4 right-4 p-2 rounded-full transition-colors ${
+                className={`absolute top-4 right-4 p-2 rounded-full transition-all hover:scale-110 ${
                   darkMode 
                     ? 'bg-slate-700/90 hover:bg-slate-700 text-white' 
                     : 'bg-white/90 hover:bg-white text-slate-900'
